@@ -5,9 +5,9 @@ import app.morphe.patcher.patch.AppTarget
 import app.morphe.patcher.patch.Compatibility
 
 object Constants {
-    val COMPATIBILITY_EXAMPLE = Compatibility(
-        name = "XYZ app", // App name as it appears in the Android launcher.
-        packageName = "com.example.app",
+    val ZTE_GALLERY = Compatibility(
+        name = "Gallery", // App name as it appears in the Android launcher.
+        packageName = "com.android.gallery3d",
         apkFileType = ApkFileType.APK, // Preferred or recommended file type.
         appIconColor = 0xFF0045, // Icon color in Morphe Manager. Usually the same color as the icon background.
         targets = listOf(
