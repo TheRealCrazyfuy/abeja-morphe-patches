@@ -10,6 +10,15 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
+
+object MultiGalleryOnResumeFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/MultiGallery;",
+    name = "onResume",
+    accessFlags = listOf(AccessFlags.PROTECTED),
+    returnType = "V",
+    parameters = emptyList(),
+)
+
 /**
  * See:
  * https://github.com/MorpheApp/morphe-patcher/blob/main/docs
