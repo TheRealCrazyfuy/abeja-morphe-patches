@@ -1,12 +1,11 @@
 group = "app.abeja"
 
 patches {
-    // TODO: Update this section with your project details.
     about {
-        name = "UserXYZ Patches"
+        name = "Abeja Patches"
         description = "Patches for apps I like"
-        source = "git@github.com:UserXYZ/morphe-patches.git"
-        author = "Awesome dev"
+        source = "git@github.com:TheRealCrazyfuy/abeja-morphe-patches.git"
+        author = "TheRealCrazyfuy"
         contact = "na"
         website = "na"
         license = "GPLv3"
