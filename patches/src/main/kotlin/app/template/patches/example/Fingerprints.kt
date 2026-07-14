@@ -19,6 +19,30 @@ object MultiGalleryOnResumeFingerprint : Fingerprint(
     parameters = emptyList(),
 )
 
+object PhotoGalleryGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/PhotoGallery;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object PermissionCheckerHelperGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/helper/PermissionCheckerHelper;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object PreViewAlbumActivityGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/PreViewAlbumActivity;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object SmartBusinessGalleryGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/search/page/SmartBusinessGallery;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
 /**
  * See:
  * https://github.com/MorpheApp/morphe-patcher/blob/main/docs

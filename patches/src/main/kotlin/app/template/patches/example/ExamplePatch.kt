@@ -1,8 +1,12 @@
 package app.template.patches.example
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
+import app.morphe.patcher.extensions.InstructionExtensions.instructions
+import app.morphe.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.morphe.patcher.patch.bytecodePatch
 import app.template.patches.shared.Constants.ZTE_GALLERY
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
+import com.android.tools.smali.dexlib2.iface.reference.StringReference
 
 private const val EXTENSION_CLASS = "Lapp/template/extension/ExamplePatch;"
 
@@ -20,6 +24,53 @@ val examplePatch = bytecodePatch(
 
     // Business logic of the patch to disable ads in the app.
     execute {
+
+
+        PhotoGalleryGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+
+            if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
+                PhotoGalleryGetRequestArrayFingerprint.method.replaceInstruction(
+                    index,
+                    """const-string v0, "android.permission.READ_MEDIA_IMAGES""""
+                )
+            }
+        }
+
+        PermissionCheckerHelperGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+
+            if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
+                PermissionCheckerHelperGetRequestArrayFingerprint.method.replaceInstruction(
+                    index,
+                    """const-string v0, "android.permission.READ_MEDIA_IMAGES""""
+                )
+            }
+        }
+
+        PreViewAlbumActivityGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+
+            if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
+                PreViewAlbumActivityGetRequestArrayFingerprint.method.replaceInstruction(
+                    index,
+                    """const-string v0, "android.permission.READ_MEDIA_IMAGES""""
+                )
+            }
+        }
+
+        SmartBusinessGalleryGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+
+            if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
+                SmartBusinessGalleryGetRequestArrayFingerprint.method.replaceInstruction(
+                    index,
+                    """const-string v0, "android.permission.READ_MEDIA_IMAGES""""
+                )
+            }
+        }
+
+
         MultiGalleryOnResumeFingerprint.method.addInstructions(
             0,
             """
