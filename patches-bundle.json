@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-07-14T13:40:25",
-  "description": "## [1.1.0-dev.1](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.0.0...v1.1.0-dev.1) (2026-07-14)\n\n### ✨ New Features\n\n* **ZTE Gallery:** Disable AI features ([01f0cea](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/01f0cead0ddaf479e5075a7c87c2dcd702ced186))",
-  "download_url": "https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/download/v1.1.0-dev.1/patches-1.1.0-dev.1.mpp",
+  "created_at": "2026-07-14T14:04:08",
+  "description": "## [1.1.0-dev.2](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2026-07-14)\n\n### ✨ New Features\n\n* **ZTE Gallery:** Experimental support all versions of ZTE Gallery ([5e01099](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/5e01099da86b4abb3c33918b6a67c0564d005c37))",
+  "download_url": "https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/download/v1.1.0-dev.2/patches-1.1.0-dev.2.mpp",
   "signature_download_url": "",
-  "version": "1.1.0-dev.1"
+  "version": "1.1.0-dev.2"
 }
