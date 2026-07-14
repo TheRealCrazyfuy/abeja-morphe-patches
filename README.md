@@ -13,9 +13,9 @@ Video player patches are WIP and will come later.
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.0.0](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.0.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;2 patches total
+> **[v1.1.0-dev.2](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.1.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;3 patches total
 <details open>
-<summary>📦 ZTE Gallery&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 ZTE Gallery&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -25,6 +25,7 @@ Video player patches are WIP and will come later.
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Disable AI features](#disable-ai-features) | Patch to disable the AI features. |  |
 | [Fix Background Service](#fix-background-service) | Patch to make the PolicyForegroundService background service not start. |  |
 | [Fix storage permission](#fix-storage-permission) | Patch to fix the storage permission. |  |
 

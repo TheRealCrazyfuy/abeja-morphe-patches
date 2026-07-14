@@ -1,4 +1,4 @@
-package app.abeja.patches.ztegallery
+package app.abeja.patches.ztegallery.disableaifeatures
 
 import app.morphe.patcher.patch.bytecodePatch
 import app.abeja.patches.shared.Constants.ZTE_GALLERY
@@ -7,26 +7,23 @@ import app.morphe.patcher.extensions.InstructionExtensions.replaceInstructions
 private const val EXTENSION_CLASS = "Lapp/template/extension/ExamplePatch;"
 
 @Suppress("unused")
-val FixBackgroundServicePatch = bytecodePatch(
-    name = "Fix Background Service",
-    description = "Patch to make the PolicyForegroundService background service not start.",
+val DisableAIFeaturesPatch = bytecodePatch(
+    name = "Disable AI features",
+    description = "Patch to disable the AI features.",
     default = true
 ) {
     compatibleWith(ZTE_GALLERY)
-
-    // dependsOn(internalPatch)
 
     extendWith("extensions/extension.mpe")
 
     execute {
 
-        WakeLockForegroundServiceHelperFingerprint.method.replaceInstructions(
+        IsSupportAIGenerationFingerprint.method.replaceInstructions(
             0,
             """
-            const/4 v0, 0x1
+            const/4 v0, 0x0
             return v0
             """
         )
-
     }
 }
