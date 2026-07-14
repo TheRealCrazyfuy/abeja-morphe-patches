@@ -11,7 +11,7 @@ import com.android.tools.smali.dexlib2.iface.reference.StringReference
 private const val EXTENSION_CLASS = "Lapp/template/extension/ExamplePatch;"
 
 @Suppress("unused")
-val examplePatch = bytecodePatch(
+val FixPermissionsPatch = bytecodePatch(
     name = "Fix storage permission",
     description = "Patch to fix the storage permission.",
     default = true
