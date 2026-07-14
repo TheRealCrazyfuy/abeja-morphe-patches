@@ -43,6 +43,15 @@ object SmartBusinessGalleryGetRequestArrayFingerprint : Fingerprint(
     returnType = "[Ljava/lang/String;",
 )
 
+object WakeLockForegroundServiceHelperFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/smart/core/WakeLockForegroundServiceHelper;",
+    name = "startForegroundService",
+    returnType = "Z",
+    parameters = listOf(
+        "Landroid/content/Context;"
+    )
+)
+
 /**
  * See:
  * https://github.com/MorpheApp/morphe-patcher/blob/main/docs
