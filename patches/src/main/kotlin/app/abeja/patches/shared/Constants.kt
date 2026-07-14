@@ -23,9 +23,9 @@ object Constants {
     )
 
 
-    val COMPATIBILITY_EXAMPLE_2 = Compatibility(
-        name = "ABC app",
-        packageName = "com.example.app",
+    val ZTE_VIDEO_PLAYER = Compatibility(
+        name = "ZTE Video Player",
+        packageName = "com.zte.videoplayer",
         apkFileType = ApkFileType.APKM,
         appIconColor = 0x00FF45, // Icon color in Morphe Manager. Usually the same color as the icon background.
         targets = listOf(
@@ -36,7 +36,7 @@ object Constants {
             ),
             // App version confirmed 100% working.
             AppTarget(
-                version = "1.0.2"
+                version = "16.0.000.000.2601071548"
             )
         )
     )
