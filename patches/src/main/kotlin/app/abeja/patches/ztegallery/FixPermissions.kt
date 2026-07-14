@@ -1,10 +1,10 @@
-package app.template.patches.example
+package app.abeja.patches.ztegallery
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.instructions
 import app.morphe.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.morphe.patcher.patch.bytecodePatch
-import app.template.patches.shared.Constants.ZTE_GALLERY
+import app.abeja.patches.shared.Constants.ZTE_GALLERY
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
 import com.android.tools.smali.dexlib2.iface.reference.StringReference
 
