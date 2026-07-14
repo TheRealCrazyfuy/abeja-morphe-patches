@@ -1,4 +1,4 @@
-package app.template.patches.example
+package app.abeja.patches.ztegallery
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
@@ -9,6 +9,48 @@ import app.morphe.patcher.opcode
 import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
+
+
+object MultiGalleryOnResumeFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/MultiGallery;",
+    name = "onResume",
+    accessFlags = listOf(AccessFlags.PROTECTED),
+    returnType = "V",
+    parameters = emptyList(),
+)
+
+object PhotoGalleryGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/PhotoGallery;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object PermissionCheckerHelperGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/helper/PermissionCheckerHelper;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object PreViewAlbumActivityGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/activity/execute/PreViewAlbumActivity;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object SmartBusinessGalleryGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/search/page/SmartBusinessGallery;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object WakeLockForegroundServiceHelperFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/smart/core/WakeLockForegroundServiceHelper;",
+    name = "startForegroundService",
+    returnType = "Z",
+    parameters = listOf(
+        "Landroid/content/Context;"
+    )
+)
 
 /**
  * See:
