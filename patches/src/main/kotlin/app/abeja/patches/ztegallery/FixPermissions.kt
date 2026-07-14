@@ -22,12 +22,12 @@ val examplePatch = bytecodePatch(
 
     extendWith("extensions/extension.mpe")
 
-    // Business logic of the patch to disable ads in the app.
+    // Business logic of the patch to fix app permissions.
     execute {
 
-
         PhotoGalleryGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
-            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference
+                ?: return@forEachIndexed
 
             if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
                 PhotoGalleryGetRequestArrayFingerprint.method.replaceInstruction(
@@ -38,7 +38,8 @@ val examplePatch = bytecodePatch(
         }
 
         PermissionCheckerHelperGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
-            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference
+                ?: return@forEachIndexed
 
             if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
                 PermissionCheckerHelperGetRequestArrayFingerprint.method.replaceInstruction(
@@ -49,7 +50,8 @@ val examplePatch = bytecodePatch(
         }
 
         PreViewAlbumActivityGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
-            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference
+                ?: return@forEachIndexed
 
             if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
                 PreViewAlbumActivityGetRequestArrayFingerprint.method.replaceInstruction(
@@ -60,7 +62,8 @@ val examplePatch = bytecodePatch(
         }
 
         SmartBusinessGalleryGetRequestArrayFingerprint.method.instructions.forEachIndexed { index, instruction ->
-            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference ?: return@forEachIndexed
+            val ref = (instruction as? ReferenceInstruction)?.reference as? StringReference
+                ?: return@forEachIndexed
 
             if (ref.string == "android.permission.MANAGE_EXTERNAL_STORAGE") {
                 SmartBusinessGalleryGetRequestArrayFingerprint.method.replaceInstruction(
@@ -69,7 +72,6 @@ val examplePatch = bytecodePatch(
                 )
             }
         }
-
 
         MultiGalleryOnResumeFingerprint.method.addInstructions(
             0,
