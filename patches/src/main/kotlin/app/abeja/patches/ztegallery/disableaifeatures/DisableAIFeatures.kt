@@ -1,4 +1,4 @@
-package app.abeja.patches.ztegallery
+package app.abeja.patches.ztegallery.disableaifeatures
 
 import app.morphe.patcher.patch.bytecodePatch
 import app.abeja.patches.shared.Constants.ZTE_GALLERY

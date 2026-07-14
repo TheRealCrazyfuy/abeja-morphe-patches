@@ -1,4 +1,4 @@
-package app.abeja.patches.ztegallery
+package app.abeja.patches.ztegallery.fixpermissions
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.instructions
