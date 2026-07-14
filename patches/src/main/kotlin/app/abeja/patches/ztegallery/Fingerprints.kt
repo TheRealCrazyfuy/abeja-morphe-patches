@@ -11,6 +11,14 @@ import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
 
+object IsSupportAIGenerationFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/config/ZteConfig;",
+    name = "isSupportAIGeneration",
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+    returnType = "Z",
+    parameters = emptyList(),
+)
+
 object MultiGalleryOnResumeFingerprint : Fingerprint(
     definingClass = "Lcom/zte/gallery3d/activity/execute/MultiGallery;",
     name = "onResume",
