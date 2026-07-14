@@ -17,10 +17,7 @@ object Constants {
             // It is highly recommended to always include the exact app version you developed your patches for
             // or the last version you have confirmed as 100% working.
             AppTarget(
-                version = "2.0.0"
-            ),
-            AppTarget(
-                version = "1.0.2"
+                version = "16.0.002.000.2601041449"
             )
         )
     )
