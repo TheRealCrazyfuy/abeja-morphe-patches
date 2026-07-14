@@ -6,7 +6,7 @@ import app.morphe.patcher.patch.Compatibility
 
 object Constants {
     val ZTE_GALLERY = Compatibility(
-        name = "Gallery", // App name as it appears in the Android launcher.
+        name = "ZTE Gallery", // App name as it appears in the Android launcher.
         packageName = "com.android.gallery3d",
         apkFileType = ApkFileType.APK, // Preferred or recommended file type.
         appIconColor = 0xFF0045, // Icon color in Morphe Manager. Usually the same color as the icon background.
