@@ -1,3 +1,9 @@
+## [1.1.0-dev.3](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.2...v1.1.0-dev.3) (2026-11-11)
+
+### ✨ New Features
+
+* **Game Space:** Add custom start animation patch ([efd3d85](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/efd3d8599c4a23dcc3352cc01c6d18584ea60901))
+
 ## [1.1.0-dev.2](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2026-07-14)
 
 ### ✨ New Features
