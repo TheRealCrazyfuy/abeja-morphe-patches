@@ -1,0 +1,94 @@
+package app.abeja.patches.gamespace.startanimation
+
+import app.abeja.patches.shared.Constants.GAME_SPACE
+import app.morphe.patcher.extensions.InstructionExtensions.addInstruction
+import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
+import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
+import app.morphe.patcher.extensions.InstructionExtensions.instructions
+import app.morphe.patcher.extensions.InstructionExtensions.replaceInstruction
+import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.patch.PatchException
+import app.morphe.patcher.util.smali.ExternalLabel
+import com.android.tools.smali.dexlib2.Opcode
+import com.android.tools.smali.dexlib2.iface.instruction.NarrowLiteralInstruction
+
+private const val EXTENSION_CLASS =
+    "Lapp/abeja/extension/gamespace/StartAnimationSettings;"
+
+@Suppress("unused")
+val GameSpaceStartAnimationPatch = bytecodePatch(
+    name = "Custom start animation",
+    description = "Adds a settings option to import and select a custom Game Space " +
+            "start animation video.",
+) {
+    compatibleWith(GAME_SPACE)
+
+    extendWith("extensions/extension.mpe")
+
+    execute {
+        // Add the new row at the end of the "Other options" screen.
+        val addPreferencesMethod = OtherOptionsFragmentAddPreferencesFingerprint.method
+        val returnIndex = addPreferencesMethod.instructions
+            .indexOfLast { it.opcode == Opcode.RETURN_VOID }
+        if (returnIndex < 0) {
+            throw PatchException("Could not find the end of addPreferences")
+        }
+
+        addPreferencesMethod.addInstructions(
+            returnIndex,
+            """
+                iget-object v0, p0, Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;->mContext:Landroid/content/Context;
+                invoke-static {v0, p1}, $EXTENSION_CLASS->addPreference(Landroid/content/Context;Landroidx/preference/PreferenceScreen;)V
+            """,
+        )
+
+        // Keep the stock URL for wallpapers, but use the imported video while
+        // the manager is in start animation mode.
+        val getCurrentUrlMethod = WallpaperManagerGetCurrentUrlFingerprint.method
+        val firstOriginalInstruction = getCurrentUrlMethod.implementation!!.instructions.first()
+
+        getCurrentUrlMethod.addInstructionsWithLabels(
+            0,
+            """
+                invoke-virtual {p0}, Lcn/nubia/common/wallpaper/WallpaperManager;->isStartAnim()Z
+                move-result v0
+                if-eqz v0, :original
+
+                iget-object v0, p0, Lcn/nubia/common/wallpaper/WallpaperManager;->mContext:Landroid/content/Context;
+                invoke-static {v0}, $EXTENSION_CLASS->getSelectedStartAnimationUrl(Landroid/content/Context;)Ljava/lang/String;
+                move-result-object v0
+                if-eqz v0, :original
+                return-object v0
+            """,
+            ExternalLabel("original", firstOriginalInstruction),
+        )
+
+        // The bundled timeout is 2600 ms. Use the duration of the imported
+        // video so longer animations are not cut off.
+        val showStartAnimMethod = SplashFragmentShowStartAnimFingerprint.method
+        val timeoutIndex = showStartAnimMethod.instructions.indexOfFirst { instruction ->
+            instruction.opcode == Opcode.CONST_WIDE_16 &&
+                    (instruction as? NarrowLiteralInstruction)?.narrowLiteral == 2600
+        }
+        if (timeoutIndex < 0) {
+            throw PatchException("Could not find the start animation timeout")
+        }
+
+        showStartAnimMethod.replaceInstruction(
+            timeoutIndex,
+            "invoke-static {}, Lcn/nubia/common/wallpaper/WallpaperManager;->getInstance()Lcn/nubia/common/wallpaper/WallpaperManager;",
+        )
+        showStartAnimMethod.addInstruction(
+            timeoutIndex + 1,
+            "move-result-object v4",
+        )
+        showStartAnimMethod.addInstruction(
+            timeoutIndex + 2,
+            "invoke-static {v4}, $EXTENSION_CLASS->getStartAnimationDurationMillis(Ljava/lang/Object;)J",
+        )
+        showStartAnimMethod.addInstruction(
+            timeoutIndex + 3,
+            "move-result-wide v2",
+        )
+    }
+}

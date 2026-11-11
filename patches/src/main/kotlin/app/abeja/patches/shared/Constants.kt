@@ -5,6 +5,24 @@ import app.morphe.patcher.patch.AppTarget
 import app.morphe.patcher.patch.Compatibility
 
 object Constants {
+    val GAME_SPACE = Compatibility(
+        name = "Game Space",
+        packageName = "cn.nubia.gamelauncher",
+        apkFileType = ApkFileType.APK,
+        appIconColor = 0x1A73E8,
+        targets = listOf(
+            // Experimental support for future versions.
+            AppTarget(
+                version = null,
+                isExperimental = true
+            ),
+            // Version this patch was developed for.
+            AppTarget(
+                version = "16.5.000.000.2604151714"
+            )
+        )
+    )
+
     val ZTE_GALLERY = Compatibility(
         name = "ZTE Gallery", // App name as it appears in the Android launcher.
         packageName = "com.android.gallery3d",
