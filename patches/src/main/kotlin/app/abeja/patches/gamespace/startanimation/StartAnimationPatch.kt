@@ -11,6 +11,8 @@ import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.util.smali.ExternalLabel
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.iface.instruction.NarrowLiteralInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
 private const val EXTENSION_CLASS =
     "Lapp/abeja/extension/gamespace/StartAnimationSettings;"
@@ -27,18 +29,30 @@ val GameSpaceStartAnimationPatch = bytecodePatch(
 
     execute {
         // Add the new row at the end of the "Other options" screen.
-        val addPreferencesMethod = OtherOptionsFragmentAddPreferencesFingerprint.method
-        val returnIndex = addPreferencesMethod.instructions
-            .indexOfLast { it.opcode == Opcode.RETURN_VOID }
-        if (returnIndex < 0) {
-            throw PatchException("Could not find the end of addPreferences")
+        //
+        // The insertion happens in onCreate right after addPreferences() has
+        // populated the screen. Appending instructions before the final
+        // return-void of addPreferences is not safe here: the loop exit branch
+        // is retargeted to the moved return-void, so the appended code would
+        // never run.
+        val onCreateMethod = OtherOptionsFragmentOnCreateFingerprint.method
+        val addPreferencesCallIndex = onCreateMethod.instructions.indexOfFirst { instruction ->
+            val reference = (instruction as? ReferenceInstruction)?.reference
+            reference is MethodReference &&
+                    reference.definingClass ==
+                    "Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;" &&
+                    reference.name == "addPreferences"
+        }
+        if (addPreferencesCallIndex < 0) {
+            throw PatchException("Could not find the addPreferences call in onCreate")
         }
 
-        addPreferencesMethod.addInstructions(
-            returnIndex,
+        onCreateMethod.addInstructions(
+            addPreferencesCallIndex + 1,
             """
-                iget-object v0, p0, Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;->mContext:Landroid/content/Context;
-                invoke-static {v0, p1}, $EXTENSION_CLASS->addPreference(Landroid/content/Context;Landroidx/preference/PreferenceScreen;)V
+                invoke-virtual {p0}, Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;->getPreferenceScreen()Landroidx/preference/PreferenceScreen;
+                move-result-object v0
+                invoke-static {v0}, $EXTENSION_CLASS->addPreference(Landroidx/preference/PreferenceScreen;)V
             """,
         )
 

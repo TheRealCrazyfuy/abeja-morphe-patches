@@ -46,10 +46,15 @@ public final class StartAnimationSettings {
     }
 
     /**
-     * Called from the patched {@code OtherOptionsFragment.addPreferences}.
+     * Called from the patched {@code OtherOptionsFragment.onCreate}.
      */
-    public static void addPreference(Context context, PreferenceScreen screen) {
-        if (context == null || screen == null) {
+    public static void addPreference(PreferenceScreen screen) {
+        if (screen == null) {
+            return;
+        }
+
+        Context context = screen.getContext();
+        if (context == null) {
             return;
         }
 

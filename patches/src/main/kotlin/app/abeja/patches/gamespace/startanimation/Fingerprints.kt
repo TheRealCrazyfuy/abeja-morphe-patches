@@ -18,10 +18,9 @@ object SplashFragmentShowStartAnimFingerprint : Fingerprint(
     parameters = emptyList(),
 )
 
-object OtherOptionsFragmentAddPreferencesFingerprint : Fingerprint(
+object OtherOptionsFragmentOnCreateFingerprint : Fingerprint(
     definingClass = "Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;",
-    name = "addPreferences",
-    accessFlags = listOf(AccessFlags.PRIVATE),
+    name = "onCreate",
     returnType = "V",
-    parameters = listOf("Landroidx/preference/PreferenceScreen;"),
+    parameters = listOf("Landroid/os/Bundle;"),
 )

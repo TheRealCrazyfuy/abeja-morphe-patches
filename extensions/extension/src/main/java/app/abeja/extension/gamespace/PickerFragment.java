@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.util.Locale;
 
 /**
@@ -156,7 +157,25 @@ public final class PickerFragment extends Fragment {
         }
 
         transaction.commitAllowingStateLoss();
+
+        // GameCenterActivity.onPause() also clears mCurrentFragment. Restore it
+        // so a later category change hides this fragment instead of stacking a
+        // second one on top of it.
+        if (settings != null) {
+            restoreCurrentFragment(activity, settings);
+        }
+
         StartAnimationSettings.onImportFinished(activity, success);
+    }
+
+    private static void restoreCurrentFragment(FragmentActivity activity, Fragment fragment) {
+        try {
+            Field field = activity.getClass().getDeclaredField("mCurrentFragment");
+            field.setAccessible(true);
+            field.set(activity, fragment);
+        } catch (Throwable ignored) {
+            // Keeping the fragment visible is enough if this fails.
+        }
     }
 
     private static File copyToGallery(Context context, Uri uri) {
