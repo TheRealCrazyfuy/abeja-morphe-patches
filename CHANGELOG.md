@@ -1,3 +1,9 @@
+## [1.1.0-dev.5](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.4...v1.1.0-dev.5) (2026-11-11)
+
+### ✨ New Features
+
+* **Game Space:** Add gallery management for start animations ([69857da](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/69857da5a71ad98ca0833149a1faaf7cc3a3936c))
+
 ## [1.1.0-dev.4](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.3...v1.1.0-dev.4) (2026-11-11)
 
 ### 🐛 Bug Fixes
