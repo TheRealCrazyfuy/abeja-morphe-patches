@@ -24,3 +24,10 @@ object OtherOptionsFragmentOnCreateFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf("Landroid/os/Bundle;"),
 )
+
+object GameSpaceActivityOnBackPressedFingerprint : Fingerprint(
+    definingClass = "Lcn/nubia/gamelauncher/activity/GameSpaceActivity;",
+    name = "onBackPressed",
+    returnType = "V",
+    parameters = emptyList(),
+)

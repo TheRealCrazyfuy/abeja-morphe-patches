@@ -55,7 +55,7 @@ public final class StartAnimationSettings {
     private static final String TAG = "StartAnimationSettings";
     private static final String PREFS_NAME = "game_space_start_animation";
     private static final String KEY_SELECTED = "selected_video";
-    private static final String KEY_PREFERENCE = "abeja_custom_start_animation";
+    private static final String KEY_PREFERENCE = "abeja_patch_features";
     private static final String DIR_NAME = "start_animations";
     private static final long DEFAULT_TIMEOUT_MS = 2600L;
     private static final long DURATION_BUFFER_MS = 400L;
@@ -97,17 +97,47 @@ public final class StartAnimationSettings {
         try {
             Preference preference = createPreference(context);
             preference.setKey(KEY_PREFERENCE);
-            preference.setTitle("Start animation video");
-            preference.setSummary(buildSummary(context));
+            preference.setTitle("Patch features");
+            preference.setSummary(buildHubSummary(context));
             preference.setPersistent(false);
             preference.setOnPreferenceClickListener(p -> {
-                showGalleryDialog(context);
+                showHubDialog(context);
                 return true;
             });
             screen.addPreference(preference);
             sPreference = new WeakReference<>(preference);
         } catch (Throwable t) {
-            Log.w(TAG, "Unable to add the start animation preference", t);
+            Log.w(TAG, "Unable to add the patch features preference", t);
+        }
+    }
+
+    /**
+     * Called from the patched {@code GameSpaceActivity.onBackPressed()}.
+     *
+     * <p>When the start animation is playing, back skips it instead of doing
+     * nothing (the stock activity ignores back entirely on game-key devices).</p>
+     *
+     * @param splash the activity's {@code SplashFragment}, may be {@code null}.
+     * @return {@code true} when the back press was consumed.
+     */
+    public static boolean handleBackPress(Object splash) {
+        if (splash == null) {
+            return false;
+        }
+
+        try {
+            Field running = splash.getClass().getDeclaredField("isDoingStartAnim");
+            running.setAccessible(true);
+            if (!running.getBoolean(splash)) {
+                return false;
+            }
+
+            Method playEnd = splash.getClass().getMethod("playEnd");
+            playEnd.invoke(splash);
+            return true;
+        } catch (Throwable t) {
+            Log.w(TAG, "Unable to skip the start animation on back press", t);
+            return false;
         }
     }
 
@@ -203,6 +233,55 @@ public final class StartAnimationSettings {
         }
 
         return new Preference(context);
+    }
+
+    private static void showHubDialog(Context context) {
+        if (context == null) {
+            return;
+        }
+
+        try {
+            final List<Feature> features = new ArrayList<>();
+            features.add(new Feature(
+                    "Start animation",
+                    buildSummary(context).toString(),
+                    () -> showGalleryDialog(context)));
+
+            final FeatureAdapter adapter = new FeatureAdapter(context, features);
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setCustomTitle(buildHubTitle(context))
+                    .setAdapter(adapter, (dialogInterface, which) ->
+                            features.get(which).action.run())
+                    .setNegativeButton("Close", null)
+                    .create();
+            dialog.show();
+        } catch (Throwable t) {
+            Log.w(TAG, "Unable to show the patch features dialog", t);
+        }
+    }
+
+    private static View buildHubTitle(Context context) {
+        LinearLayout container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.VERTICAL);
+        int padding = dp(context, 24);
+        container.setPadding(padding, padding, padding, dp(context, 8));
+
+        TextView title = new TextView(context);
+        title.setText("Patch features");
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        title.setTypeface(Typeface.DEFAULT_BOLD);
+        container.addView(title);
+
+        TextView helper = new TextView(context);
+        helper.setText("Extra options added by the Abeja patches.");
+        helper.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+        helper.setAlpha(0.65f);
+        LinearLayout.LayoutParams helperParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        helperParams.topMargin = dp(context, 4);
+        container.addView(helper, helperParams);
+
+        return container;
     }
 
     private static void showGalleryDialog(Context context) {
@@ -363,6 +442,13 @@ public final class StartAnimationSettings {
         return file == null ? DEFAULT_SUMMARY : "Custom: " + file.getName();
     }
 
+    private static CharSequence buildHubSummary(Context context) {
+        File file = getSelectedFile(context);
+        return file == null
+                ? "Start animation: bundled default"
+                : "Start animation: " + file.getName();
+    }
+
     private static void updatePreferenceSummary(Context context) {
         Preference preference = sPreference.get();
         if (preference == null || context == null) {
@@ -370,7 +456,7 @@ public final class StartAnimationSettings {
         }
 
         try {
-            preference.setSummary(buildSummary(context));
+            preference.setSummary(buildHubSummary(context));
         } catch (Throwable t) {
             Log.w(TAG, "Unable to update the preference summary", t);
         }
@@ -528,6 +614,82 @@ public final class StartAnimationSettings {
 
     private interface OnDeleteClickListener {
         void onDelete(File file);
+    }
+
+    private interface FeatureAction {
+        void run();
+    }
+
+    private static final class Feature {
+        final String title;
+        final String summary;
+        final FeatureAction action;
+
+        Feature(String title, String summary, FeatureAction action) {
+            this.title = title;
+            this.summary = summary;
+            this.action = action;
+        }
+    }
+
+    private static final class FeatureAdapter extends BaseAdapter {
+        private final Context context;
+        private final List<Feature> features;
+
+        FeatureAdapter(Context context, List<Feature> features) {
+            this.context = context;
+            this.features = features;
+        }
+
+        @Override
+        public int getCount() {
+            return features.size();
+        }
+
+        @Override
+        public Feature getItem(int position) {
+            return features.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LinearLayout row;
+            if (convertView instanceof LinearLayout
+                    && convertView.getTag() instanceof TextView[]) {
+                row = (LinearLayout) convertView;
+            } else {
+                row = new LinearLayout(context);
+                row.setOrientation(LinearLayout.VERTICAL);
+                row.setPadding(dp(context, 24), dp(context, 12),
+                        dp(context, 24), dp(context, 12));
+
+                TextView title = new TextView(context);
+                title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                row.addView(title);
+
+                TextView summary = new TextView(context);
+                summary.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                summary.setAlpha(0.6f);
+                LinearLayout.LayoutParams summaryParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                summaryParams.topMargin = dp(context, 2);
+                row.addView(summary, summaryParams);
+
+                row.setTag(new TextView[]{title, summary});
+            }
+
+            Feature feature = getItem(position);
+            TextView[] views = (TextView[]) row.getTag();
+            views[0].setText(feature.title);
+            views[1].setText(feature.summary);
+            return row;
+        }
     }
 
     private static final class VideoInfo {

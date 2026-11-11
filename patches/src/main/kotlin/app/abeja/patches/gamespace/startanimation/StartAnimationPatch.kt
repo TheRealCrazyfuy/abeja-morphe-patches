@@ -20,8 +20,8 @@ private const val EXTENSION_CLASS =
 @Suppress("unused")
 val GameSpaceStartAnimationPatch = bytecodePatch(
     name = "Custom start animation",
-    description = "Adds a settings option to import and select a custom Game Space " +
-            "start animation video.",
+    description = "Adds a patch features menu to Game Space settings with a custom " +
+            "start animation gallery. Pressing back while the animation plays skips it.",
 ) {
     compatibleWith(GAME_SPACE)
 
@@ -54,6 +54,23 @@ val GameSpaceStartAnimationPatch = bytecodePatch(
                 move-result-object v0
                 invoke-static {v0}, $EXTENSION_CLASS->addPreference(Landroidx/preference/PreferenceScreen;)V
             """,
+        )
+
+        // Game key devices ignore back while the splash is shown. Use it to
+        // skip the start animation when one is playing.
+        val onBackPressedMethod = GameSpaceActivityOnBackPressedFingerprint.method
+        val firstBackInstruction = onBackPressedMethod.implementation!!.instructions.first()
+
+        onBackPressedMethod.addInstructionsWithLabels(
+            0,
+            """
+                iget-object v0, p0, Lcn/nubia/gamelauncher/activity/GameSpaceActivity;->mSplash:Lcn/nubia/gamelauncher/fragment/SplashFragment;
+                invoke-static {v0}, $EXTENSION_CLASS->handleBackPress(Ljava/lang/Object;)Z
+                move-result v0
+                if-eqz v0, :original
+                return-void
+            """,
+            ExternalLabel("original", firstBackInstruction),
         )
 
         // Keep the stock URL for wallpapers, but use the imported video while
