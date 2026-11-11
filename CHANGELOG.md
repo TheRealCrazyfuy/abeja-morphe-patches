@@ -1,3 +1,10 @@
+## [1.1.0-dev.7](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.6...v1.1.0-dev.7) (2026-11-11)
+
+### ✨ New Features
+
+* **Game Space:** Add custom background music ([4b210a5](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/4b210a5695632b98ae478c668a400104d9c109fe))
+* **Game Space:** Add patch features hub and back-to-skip start animation ([67e6398](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/67e6398ae382ca9a10d29312b26cd88307547834))
+
 ## [1.1.0-dev.6](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.5...v1.1.0-dev.6) (2026-11-11)
 
 ### 🐛 Bug Fixes

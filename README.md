@@ -13,7 +13,7 @@ Video player patches are WIP and will come later.
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.1.0-dev.6](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.1.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;4 patches total
+> **[v1.1.0-dev.7](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.1.0-dev.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;4 patches total
 <details open>
 <summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
@@ -25,7 +25,7 @@ Video player patches are WIP and will come later.
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Custom start animation](#custom-start-animation) | Adds a settings option to import and select a custom Game Space start animation video. |  |
+| [Custom start animation and background music](#custom-start-animation-and-background-music) | Adds a patch features menu to Game Space settings for importing custom start animation videos and background music. Pressing back while the start animation plays skips it. |  |
 
 </details>
 
