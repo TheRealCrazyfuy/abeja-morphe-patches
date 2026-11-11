@@ -17,11 +17,15 @@ import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 private const val EXTENSION_CLASS =
     "Lapp/abeja/extension/gamespace/StartAnimationSettings;"
 
+private const val BGM_EXTENSION_CLASS =
+    "Lapp/abeja/extension/gamespace/BackgroundMusicSettings;"
+
 @Suppress("unused")
 val GameSpaceStartAnimationPatch = bytecodePatch(
-    name = "Custom start animation",
-    description = "Adds a patch features menu to Game Space settings with a custom " +
-            "start animation gallery. Pressing back while the animation plays skips it.",
+    name = "Custom start animation and background music",
+    description = "Adds a patch features menu to Game Space settings for importing custom " +
+            "start animation videos and background music. Pressing back while the start " +
+            "animation plays skips it.",
 ) {
     compatibleWith(GAME_SPACE)
 
@@ -71,6 +75,30 @@ val GameSpaceStartAnimationPatch = bytecodePatch(
                 return-void
             """,
             ExternalLabel("original", firstBackInstruction),
+        )
+
+        // Use an imported track for the Game Space background music.
+        val initMediaPlayerMethod = BgmHelperInitMediaPlayerFingerprint.method
+        val setDataSourceIndex = initMediaPlayerMethod.instructions.indexOfFirst { instruction ->
+            val reference = (instruction as? ReferenceInstruction)?.reference
+            reference is MethodReference &&
+                    reference.definingClass == "Landroid/media/MediaPlayer;" &&
+                    reference.name == "setDataSource" &&
+                    reference.parameterTypes == listOf(
+                        "Landroid/content/Context;",
+                        "Landroid/net/Uri;",
+                    )
+        }
+        if (setDataSourceIndex < 0) {
+            throw PatchException("Could not find the MediaPlayer setup in initMediaPlayer")
+        }
+
+        initMediaPlayerMethod.addInstructions(
+            setDataSourceIndex,
+            """
+                invoke-static {v2, v3}, $BGM_EXTENSION_CLASS->resolveBgmUri(Landroid/content/Context;Landroid/net/Uri;)Landroid/net/Uri;
+                move-result-object v3
+            """,
         )
 
         // Keep the stock URL for wallpapers, but use the imported video while

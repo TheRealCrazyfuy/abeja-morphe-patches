@@ -98,7 +98,7 @@ public final class StartAnimationSettings {
             Preference preference = createPreference(context);
             preference.setKey(KEY_PREFERENCE);
             preference.setTitle("Patch features");
-            preference.setSummary(buildHubSummary(context));
+            preference.setSummary(buildHubSummary());
             preference.setPersistent(false);
             preference.setOnPreferenceClickListener(p -> {
                 showHubDialog(context);
@@ -246,6 +246,10 @@ public final class StartAnimationSettings {
                     "Start animation",
                     buildSummary(context).toString(),
                     () -> showGalleryDialog(context)));
+            features.add(new Feature(
+                    "Background music",
+                    BackgroundMusicSettings.buildSummary(context).toString(),
+                    () -> BackgroundMusicSettings.showGalleryDialog(context)));
 
             final FeatureAdapter adapter = new FeatureAdapter(context, features);
             AlertDialog dialog = new AlertDialog.Builder(context)
@@ -442,11 +446,8 @@ public final class StartAnimationSettings {
         return file == null ? DEFAULT_SUMMARY : "Custom: " + file.getName();
     }
 
-    private static CharSequence buildHubSummary(Context context) {
-        File file = getSelectedFile(context);
-        return file == null
-                ? "Start animation: bundled default"
-                : "Start animation: " + file.getName();
+    private static CharSequence buildHubSummary() {
+        return "Start animation and background music";
     }
 
     private static void updatePreferenceSummary(Context context) {
@@ -456,7 +457,7 @@ public final class StartAnimationSettings {
         }
 
         try {
-            preference.setSummary(buildHubSummary(context));
+            preference.setSummary(buildHubSummary());
         } catch (Throwable t) {
             Log.w(TAG, "Unable to update the preference summary", t);
         }

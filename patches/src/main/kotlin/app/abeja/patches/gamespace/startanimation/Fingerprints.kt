@@ -31,3 +31,10 @@ object GameSpaceActivityOnBackPressedFingerprint : Fingerprint(
     returnType = "V",
     parameters = emptyList(),
 )
+
+object BgmHelperInitMediaPlayerFingerprint : Fingerprint(
+    definingClass = "Lcn/nubia/gamelauncher/helper/BgmHelper;",
+    name = "initMediaPlayer",
+    returnType = "V",
+    parameters = emptyList(),
+)
