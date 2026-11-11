@@ -653,6 +653,9 @@ public final class StartAnimationSettings {
             root.setOrientation(LinearLayout.HORIZONTAL);
             root.setGravity(Gravity.CENTER_VERTICAL);
             root.setPadding(dp(context, 16), dp(context, 10), dp(context, 8), dp(context, 10));
+            // Focusable children (the delete button) would make the ListView treat
+            // the whole item as focusable and stop delivering item clicks.
+            root.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
             ImageView thumbnail = new ImageView(context);
             thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -684,6 +687,7 @@ public final class StartAnimationSettings {
             RadioButton radio = new RadioButton(context);
             radio.setClickable(false);
             radio.setFocusable(false);
+            radio.setFocusableInTouchMode(false);
             root.addView(radio, new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -691,6 +695,8 @@ public final class StartAnimationSettings {
             delete.setImageResource(android.R.drawable.ic_menu_delete);
             delete.setBackground(null);
             delete.setContentDescription("Delete");
+            delete.setFocusable(false);
+            delete.setFocusableInTouchMode(false);
             LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(
                     dp(context, 48), dp(context, 48));
             deleteParams.leftMargin = dp(context, 4);
