@@ -1,3 +1,9 @@
+## [1.1.0-dev.6](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.5...v1.1.0-dev.6) (2026-11-11)
+
+### 🐛 Bug Fixes
+
+* **Game Space:** Make start animation gallery rows selectable ([303278b](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/303278b08d7aee03d25f4f081a3ae5bf7912a6ae))
+
 ## [1.1.0-dev.5](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.4...v1.1.0-dev.5) (2026-11-11)
 
 ### ✨ New Features
