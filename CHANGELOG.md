@@ -1,3 +1,9 @@
+## [1.1.0-dev.4](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.3...v1.1.0-dev.4) (2026-11-11)
+
+### 🐛 Bug Fixes
+
+* **Game Space:** Make the custom start animation row appear ([3c0b070](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/3c0b07044dbb19b54cde4d91321892bb4c633acd))
+
 ## [1.1.0-dev.3](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.2...v1.1.0-dev.3) (2026-11-11)
 
 ### ✨ New Features
