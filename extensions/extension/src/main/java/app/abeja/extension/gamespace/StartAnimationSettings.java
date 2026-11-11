@@ -3,11 +3,26 @@ package app.abeja.extension.gamespace;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
@@ -21,8 +36,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Settings entry and selection logic for a custom Game Space start animation.
@@ -39,8 +60,19 @@ public final class StartAnimationSettings {
     private static final long DEFAULT_TIMEOUT_MS = 2600L;
     private static final long DURATION_BUFFER_MS = 400L;
     private static final String DEFAULT_SUMMARY = "Default animation";
+    private static final int THUMBNAIL_WIDTH = 192;
+    private static final int THUMBNAIL_HEIGHT = 108;
 
     private static WeakReference<Preference> sPreference = new WeakReference<>(null);
+
+    private static final Map<String, VideoInfo> sVideoInfoCache = new HashMap<>();
+    private static final Set<String> sLoadingVideoInfo = new HashSet<>();
+    private static final ExecutorService sVideoInfoExecutor = Executors.newSingleThreadExecutor(task -> {
+        Thread thread = new Thread(task, "gamespace-start-animation-gallery");
+        thread.setDaemon(true);
+        return thread;
+    });
+    private static final Handler sMainHandler = new Handler(Looper.getMainLooper());
 
     private StartAnimationSettings() {
     }
@@ -174,42 +206,147 @@ public final class StartAnimationSettings {
     }
 
     private static void showGalleryDialog(Context context) {
+        if (context == null) {
+            return;
+        }
+
         try {
             final List<File> files = getGalleryFiles(context);
-            final File selected = getSelectedFile(context);
-            final String[] items = new String[files.size() + 2];
+            final GalleryAdapter adapter = new GalleryAdapter(context, files, getSelectedFile(context));
 
-            items[0] = selected == null
-                    ? "Default animation (selected)"
-                    : "Default animation";
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setCustomTitle(buildGalleryTitle(context, files.size()))
+                    .setAdapter(adapter, (dialogInterface, which) -> {
+                        if (which == 0) {
+                            setSelectedFile(context, null);
+                            adapter.setSelected(null);
+                            toast(context, "Default start animation selected");
+                        } else {
+                            File file = adapter.getItem(which);
+                            setSelectedFile(context, file);
+                            adapter.setSelected(file);
+                            toast(context, "Selected: " + file.getName());
+                        }
+                    })
+                    .setPositiveButton("Import video", (dialogInterface, which) -> startPicker(context))
+                    .setNegativeButton("Close", null)
+                    .create();
 
-            for (int i = 0; i < files.size(); i++) {
-                File file = files.get(i);
-                boolean isSelected = selected != null
-                        && selected.getAbsolutePath().equals(file.getAbsolutePath());
-                items[i + 1] = file.getName() + (isSelected ? "  (selected)" : "");
-            }
-
-            items[files.size() + 1] = "Import video...";
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Start animation");
-            builder.setItems(items, (dialog, which) -> {
-                if (which == 0) {
-                    setSelectedFile(context, null);
-                    toast(context, "Default start animation selected");
-                } else if (which == files.size() + 1) {
-                    startPicker(context);
-                } else {
-                    File file = files.get(which - 1);
-                    setSelectedFile(context, file);
-                    toast(context, "Selected: " + file.getName());
-                }
-            });
-            builder.setNegativeButton("Close", null);
-            builder.show();
+            adapter.setOnDeleteClickListener(file -> confirmDelete(context, file, adapter));
+            dialog.show();
         } catch (Throwable t) {
             Log.w(TAG, "Unable to show the start animation dialog", t);
+        }
+    }
+
+    private static View buildGalleryTitle(Context context, int importedCount) {
+        LinearLayout container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.VERTICAL);
+        int padding = dp(context, 24);
+        container.setPadding(padding, padding, padding, dp(context, 8));
+
+        TextView title = new TextView(context);
+        title.setText("Start animation");
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        title.setTypeface(Typeface.DEFAULT_BOLD);
+        container.addView(title);
+
+        TextView helper = new TextView(context);
+        helper.setText(importedCount == 0
+                ? "Import a video to replace the bundled animation."
+                : "Tap a video to use it, or tap the bin to delete it.");
+        helper.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+        helper.setAlpha(0.65f);
+        LinearLayout.LayoutParams helperParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        helperParams.topMargin = dp(context, 4);
+        container.addView(helper, helperParams);
+
+        return container;
+    }
+
+    private static void confirmDelete(Context context, File file, GalleryAdapter adapter) {
+        final String path = file.getAbsolutePath();
+        final boolean wasSelected =
+                path.equals(preferences(context).getString(KEY_SELECTED, null));
+
+        new AlertDialog.Builder(context)
+                .setTitle("Delete video?")
+                .setMessage(file.getName()
+                        + "\n\nThis video will be permanently removed from the gallery.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    if (!file.delete()) {
+                        toast(context, "Unable to delete the video");
+                        return;
+                    }
+
+                    sVideoInfoCache.remove(path);
+                    if (wasSelected) {
+                        setSelectedFile(context, null);
+                    }
+                    adapter.remove(file);
+                    toast(context, "Deleted: " + file.getName());
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private static void requestVideoInfo(File file, Runnable onLoaded) {
+        final String path = file.getAbsolutePath();
+        if (sVideoInfoCache.containsKey(path) || !sLoadingVideoInfo.add(path)) {
+            return;
+        }
+
+        sVideoInfoExecutor.execute(() -> {
+            final VideoInfo info = readVideoInfo(file);
+            sMainHandler.post(() -> {
+                sLoadingVideoInfo.remove(path);
+                if (file.exists()) {
+                    sVideoInfoCache.put(path, info);
+                }
+                onLoaded.run();
+            });
+        });
+    }
+
+    private static VideoInfo readVideoInfo(File file) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(file.getAbsolutePath());
+
+            long duration = 0L;
+            String value = retriever.extractMetadata(
+                    MediaMetadataRetriever.METADATA_KEY_DURATION);
+            if (value != null) {
+                try {
+                    duration = Long.parseLong(value);
+                } catch (NumberFormatException ignored) {
+                    // Keep the duration unknown.
+                }
+            }
+
+            Bitmap frame = null;
+            try {
+                frame = retriever.getScaledFrameAtTime(
+                        0L, MediaMetadataRetriever.OPTION_CLOSEST_SYNC,
+                        THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+            } catch (Throwable ignored) {
+                // Some containers do not support scaled frames.
+            }
+            if (frame == null) {
+                frame = retriever.getFrameAtTime(
+                        0L, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+            }
+
+            return new VideoInfo(frame, duration);
+        } catch (Throwable t) {
+            return new VideoInfo(null, 0L);
+        } finally {
+            try {
+                retriever.release();
+            } catch (Throwable ignored) {
+                // Nothing else to do.
+            }
         }
     }
 
@@ -354,6 +491,231 @@ public final class StartAnimationSettings {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         } catch (Throwable t) {
             Log.w(TAG, "Unable to show toast", t);
+        }
+    }
+
+    private static int dp(Context context, int value) {
+        return Math.round(value * context.getResources().getDisplayMetrics().density);
+    }
+
+    private static GradientDrawable placeholderDrawable(Context context) {
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(0x22888888);
+        drawable.setCornerRadius(dp(context, 6));
+        return drawable;
+    }
+
+    private static String formatSize(File file) {
+        long bytes = file.length();
+        if (bytes <= 0L) {
+            return "unknown size";
+        }
+        if (bytes < 1024L * 1024L) {
+            return String.format(Locale.US, "%.0f KB", bytes / 1024.0);
+        }
+        return String.format(Locale.US, "%.1f MB", bytes / (1024.0 * 1024.0));
+    }
+
+    private static String formatDuration(long millis) {
+        if (millis <= 0L) {
+            return "unknown length";
+        }
+        long totalSeconds = Math.round(millis / 1000.0);
+        long minutes = totalSeconds / 60L;
+        long seconds = totalSeconds % 60L;
+        return String.format(Locale.US, "%d:%02d", minutes, seconds);
+    }
+
+    private interface OnDeleteClickListener {
+        void onDelete(File file);
+    }
+
+    private static final class VideoInfo {
+        final Bitmap thumbnail;
+        final long durationMillis;
+
+        VideoInfo(Bitmap thumbnail, long durationMillis) {
+            this.thumbnail = thumbnail;
+            this.durationMillis = durationMillis;
+        }
+    }
+
+    private static final class GalleryAdapter extends BaseAdapter {
+        private final Context context;
+        private final List<File> files;
+        private final List<File> entries;
+        private File selected;
+        private OnDeleteClickListener deleteClickListener;
+
+        GalleryAdapter(Context context, List<File> files, File selected) {
+            this.context = context;
+            this.files = files;
+            this.entries = new ArrayList<>();
+            this.entries.add(null);
+            this.entries.addAll(files);
+            this.selected = selected;
+        }
+
+        void setOnDeleteClickListener(OnDeleteClickListener listener) {
+            this.deleteClickListener = listener;
+        }
+
+        void setSelected(File file) {
+            this.selected = file;
+            notifyDataSetChanged();
+        }
+
+        void remove(File file) {
+            files.remove(file);
+            entries.remove(file);
+            if (selected != null
+                    && selected.getAbsolutePath().equals(file.getAbsolutePath())) {
+                selected = null;
+            }
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return entries.size();
+        }
+
+        @Override
+        public File getItem(int position) {
+            return entries.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Row row;
+            if (convertView instanceof LinearLayout && convertView.getTag() instanceof Row) {
+                row = (Row) convertView.getTag();
+            } else {
+                row = createRow(parent);
+                convertView = row.root;
+                convertView.setTag(row);
+            }
+
+            final File file = getItem(position);
+            boolean isDefault = file == null;
+            boolean isSelected = isDefault
+                    ? selected == null
+                    : selected != null
+                            && selected.getAbsolutePath().equals(file.getAbsolutePath());
+
+            row.radio.setChecked(isSelected);
+            row.delete.setVisibility(isDefault ? View.INVISIBLE : View.VISIBLE);
+
+            if (isDefault) {
+                row.name.setText("Default animation");
+                row.meta.setText("Bundled Game Space intro");
+                row.thumbnail.setImageDrawable(placeholderDrawable(context));
+                row.delete.setOnClickListener(null);
+                return convertView;
+            }
+
+            row.name.setText(file.getName());
+
+            VideoInfo info = sVideoInfoCache.get(file.getAbsolutePath());
+            if (info == null) {
+                row.meta.setText(formatSize(file));
+                row.thumbnail.setImageDrawable(placeholderDrawable(context));
+                requestVideoInfo(file, this::notifyDataSetChanged);
+            } else {
+                row.meta.setText(formatSize(file)
+                        + "  \u00b7  " + formatDuration(info.durationMillis));
+                if (info.thumbnail != null) {
+                    row.thumbnail.setImageBitmap(info.thumbnail);
+                } else {
+                    row.thumbnail.setImageDrawable(placeholderDrawable(context));
+                }
+            }
+
+            row.delete.setOnClickListener(v -> {
+                OnDeleteClickListener listener = deleteClickListener;
+                if (listener != null) {
+                    listener.onDelete(file);
+                }
+            });
+
+            return convertView;
+        }
+
+        private Row createRow(ViewGroup parent) {
+            Context context = parent.getContext();
+
+            LinearLayout root = new LinearLayout(context);
+            root.setOrientation(LinearLayout.HORIZONTAL);
+            root.setGravity(Gravity.CENTER_VERTICAL);
+            root.setPadding(dp(context, 16), dp(context, 10), dp(context, 8), dp(context, 10));
+
+            ImageView thumbnail = new ImageView(context);
+            thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            thumbnail.setImageDrawable(placeholderDrawable(context));
+            root.addView(thumbnail, new LinearLayout.LayoutParams(
+                    dp(context, 64), dp(context, 36)));
+
+            LinearLayout text = new LinearLayout(context);
+            text.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                    0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            textParams.leftMargin = dp(context, 16);
+            root.addView(text, textParams);
+
+            TextView name = new TextView(context);
+            name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            name.setSingleLine(true);
+            name.setEllipsize(TextUtils.TruncateAt.END);
+            text.addView(name);
+
+            TextView meta = new TextView(context);
+            meta.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+            meta.setAlpha(0.6f);
+            LinearLayout.LayoutParams metaParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            metaParams.topMargin = dp(context, 2);
+            text.addView(meta, metaParams);
+
+            RadioButton radio = new RadioButton(context);
+            radio.setClickable(false);
+            radio.setFocusable(false);
+            root.addView(radio, new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            ImageButton delete = new ImageButton(context);
+            delete.setImageResource(android.R.drawable.ic_menu_delete);
+            delete.setBackground(null);
+            delete.setContentDescription("Delete");
+            LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(
+                    dp(context, 48), dp(context, 48));
+            deleteParams.leftMargin = dp(context, 4);
+            root.addView(delete, deleteParams);
+
+            return new Row(root, thumbnail, name, meta, radio, delete);
+        }
+    }
+
+    private static final class Row {
+        final LinearLayout root;
+        final ImageView thumbnail;
+        final TextView name;
+        final TextView meta;
+        final RadioButton radio;
+        final ImageButton delete;
+
+        Row(LinearLayout root, ImageView thumbnail, TextView name, TextView meta,
+                RadioButton radio, ImageButton delete) {
+            this.root = root;
+            this.thumbnail = thumbnail;
+            this.name = name;
+            this.meta = meta;
+            this.radio = radio;
+            this.delete = delete;
         }
     }
 }
