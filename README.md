@@ -11,7 +11,7 @@ ZTE gallery, Video player and Game Space patches.
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.1.0-dev.9](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.1.0-dev.9)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;5 patches total
+> **[v1.1.0](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.1.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;5 patches total
 <details open>
 <summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
