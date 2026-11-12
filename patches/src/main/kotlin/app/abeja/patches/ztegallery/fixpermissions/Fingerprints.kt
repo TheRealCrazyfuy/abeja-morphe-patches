@@ -11,26 +11,52 @@ object MultiGalleryOnResumeFingerprint : Fingerprint(
     parameters = emptyList(),
 )
 
-object PhotoGalleryGetRequestArrayFingerprint : Fingerprint(
-    definingClass = "Lcom/zte/gallery3d/activity/execute/PhotoGallery;",
+object PermissionCheckerCheckPermissionFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/component/permissionchecker/PermissionChecker;",
+    name = "checkPermission",
+    returnType = "Z",
+    parameters = listOf("Ljava/lang/String;"),
+)
+
+object PermissionCheckerCheckPermissionsIfNotAllowFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/gallery3d/component/permissionchecker/PermissionChecker;",
+    name = "checkPermissionsIfNotAllow",
+    returnType = "Z",
+    parameters = emptyList(),
+)
+
+object WallpaperGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/android/gallery3d/app/Wallpaper;",
     name = "getRequestArray",
     returnType = "[Ljava/lang/String;",
 )
 
-object PermissionCheckerHelperGetRequestArrayFingerprint : Fingerprint(
-    definingClass = "Lcom/zte/gallery3d/activity/execute/helper/PermissionCheckerHelper;",
+object CropPageGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/android/gallery3d/app/CropPage;",
     name = "getRequestArray",
     returnType = "[Ljava/lang/String;",
 )
 
-object PreViewAlbumActivityGetRequestArrayFingerprint : Fingerprint(
-    definingClass = "Lcom/zte/gallery3d/activity/execute/PreViewAlbumActivity;",
+object NewCropPageGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/android/gallery3d/app/NewCropPage;",
     name = "getRequestArray",
     returnType = "[Ljava/lang/String;",
 )
 
-object SmartBusinessGalleryGetRequestArrayFingerprint : Fingerprint(
-    definingClass = "Lcom/zte/search/page/SmartBusinessGallery;",
+object DocumentActivityGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/document/DocumentActivity;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object BaseDocumentActivityGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/zte/document/BaseDocumentActivity;",
+    name = "getRequestArray",
+    returnType = "[Ljava/lang/String;",
+)
+
+object GalleryFavoriteProviderGetRequestArrayFingerprint : Fingerprint(
+    definingClass = "Lcom/android/gallery3d/provider/GalleryFavoriteProvider;",
     name = "getRequestArray",
     returnType = "[Ljava/lang/String;",
 )
