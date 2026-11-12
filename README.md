@@ -6,9 +6,7 @@ Template repository for Morphe Patches.
 
 These are my experimental WIP morphe patches for some apps
 
-ZTE gallery patches will adapt it to any Android device.
-
-Video player patches are WIP and will come later.
+ZTE gallery, Video player and Game Space patches.
 
 ## 🩹 Patches list
 
