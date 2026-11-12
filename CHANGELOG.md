@@ -1,3 +1,9 @@
+## [1.1.0-dev.8](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.7...v1.1.0-dev.8) (2026-11-12)
+
+### 🐛 Bug Fixes
+
+* **ZTE Gallery:** Fix storage permission checks in all activities ([0110326](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/0110326d11a9ddc623be75aba7aeddd0d2181cb2))
+
 ## [1.1.0-dev.7](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.6...v1.1.0-dev.7) (2026-11-11)
 
 ### ✨ New Features

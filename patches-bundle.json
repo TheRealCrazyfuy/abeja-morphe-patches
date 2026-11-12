@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-11T16:41:35",
-  "description": "## [1.1.0-dev.7](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.6...v1.1.0-dev.7) (2026-11-11)\n\n### ✨ New Features\n\n* **Game Space:** Add custom background music ([4b210a5](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/4b210a5695632b98ae478c668a400104d9c109fe))\n* **Game Space:** Add patch features hub and back-to-skip start animation ([67e6398](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/67e6398ae382ca9a10d29312b26cd88307547834))",
-  "download_url": "https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/download/v1.1.0-dev.7/patches-1.1.0-dev.7.mpp",
+  "created_at": "2026-11-12T20:40:56",
+  "description": "## [1.1.0-dev.8](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.7...v1.1.0-dev.8) (2026-11-12)\n\n### 🐛 Bug Fixes\n\n* **ZTE Gallery:** Fix storage permission checks in all activities ([0110326](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/0110326d11a9ddc623be75aba7aeddd0d2181cb2))",
+  "download_url": "https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/download/v1.1.0-dev.8/patches-1.1.0-dev.8.mpp",
   "signature_download_url": "",
-  "version": "1.1.0-dev.7"
+  "version": "1.1.0-dev.8"
 }
