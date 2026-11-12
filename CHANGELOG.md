@@ -1,3 +1,9 @@
+## [1.1.0-dev.9](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.8...v1.1.0-dev.9) (2026-11-12)
+
+### ✨ New Features
+
+* **ZTE Video Player:** Add storage permission fix patch ([1ad3a23](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/1ad3a234edf05e1ed8e64cfdf3a42211f48c0085))
+
 ## [1.1.0-dev.8](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0-dev.7...v1.1.0-dev.8) (2026-11-12)
 
 ### 🐛 Bug Fixes
