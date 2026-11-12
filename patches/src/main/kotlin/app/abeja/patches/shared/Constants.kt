@@ -48,7 +48,7 @@ object Constants {
     val ZTE_VIDEO_PLAYER = Compatibility(
         name = "ZTE Video Player",
         packageName = "com.zte.videoplayer",
-        apkFileType = ApkFileType.APKM,
+        apkFileType = ApkFileType.APK,
         appIconColor = 0x00FF45, // Icon color in Morphe Manager. Usually the same color as the icon background.
         targets = listOf(
             // 'any' version supported experimentally.
