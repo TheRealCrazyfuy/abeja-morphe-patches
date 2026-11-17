@@ -97,7 +97,7 @@ public final class StartAnimationSettings {
         try {
             Preference preference = createPreference(context);
             preference.setKey(KEY_PREFERENCE);
-            preference.setTitle("Patch features");
+            preference.setTitle("Start animation and background music");
             preference.setSummary(buildHubSummary());
             preference.setPersistent(false);
             preference.setOnPreferenceClickListener(p -> {
@@ -268,22 +268,13 @@ public final class StartAnimationSettings {
         LinearLayout container = new LinearLayout(context);
         container.setOrientation(LinearLayout.VERTICAL);
         int padding = dp(context, 24);
-        container.setPadding(padding, padding, padding, dp(context, 8));
+        container.setPadding(padding, padding, padding, padding);
 
         TextView title = new TextView(context);
-        title.setText("Patch features");
+        title.setText("Start animation and background music");
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         container.addView(title);
-
-        TextView helper = new TextView(context);
-        helper.setText("Extra options added by the Abeja patches.");
-        helper.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-        helper.setAlpha(0.65f);
-        LinearLayout.LayoutParams helperParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        helperParams.topMargin = dp(context, 4);
-        container.addView(helper, helperParams);
 
         return container;
     }
@@ -447,7 +438,7 @@ public final class StartAnimationSettings {
     }
 
     private static CharSequence buildHubSummary() {
-        return "Start animation and background music";
+        return "Customize startup animation and audio";
     }
 
     private static void updatePreferenceSummary(Context context) {
