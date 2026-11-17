@@ -18,13 +18,6 @@ object SplashFragmentShowStartAnimFingerprint : Fingerprint(
     parameters = emptyList(),
 )
 
-object OtherOptionsFragmentOnCreateFingerprint : Fingerprint(
-    definingClass = "Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;",
-    name = "onCreate",
-    returnType = "V",
-    parameters = listOf("Landroid/os/Bundle;"),
-)
-
 object GameSpaceActivityOnBackPressedFingerprint : Fingerprint(
     definingClass = "Lcn/nubia/gamelauncher/activity/GameSpaceActivity;",
     name = "onBackPressed",

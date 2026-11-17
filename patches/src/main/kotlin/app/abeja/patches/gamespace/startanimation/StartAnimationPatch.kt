@@ -1,5 +1,6 @@
 package app.abeja.patches.gamespace.startanimation
 
+import app.abeja.patches.gamespace.patchoptions.GameSpacePatchOptionsPatch
 import app.abeja.patches.shared.Constants.GAME_SPACE
 import app.morphe.patcher.extensions.InstructionExtensions.addInstruction
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
@@ -29,37 +30,11 @@ val GameSpaceStartAnimationPatch = bytecodePatch(
 ) {
     compatibleWith(GAME_SPACE)
 
+    dependsOn(GameSpacePatchOptionsPatch)
+
     extendWith("extensions/extension.mpe")
 
     execute {
-        // Add the new row at the end of the "Other options" screen.
-        //
-        // The insertion happens in onCreate right after addPreferences() has
-        // populated the screen. Appending instructions before the final
-        // return-void of addPreferences is not safe here: the loop exit branch
-        // is retargeted to the moved return-void, so the appended code would
-        // never run.
-        val onCreateMethod = OtherOptionsFragmentOnCreateFingerprint.method
-        val addPreferencesCallIndex = onCreateMethod.instructions.indexOfFirst { instruction ->
-            val reference = (instruction as? ReferenceInstruction)?.reference
-            reference is MethodReference &&
-                    reference.definingClass ==
-                    "Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;" &&
-                    reference.name == "addPreferences"
-        }
-        if (addPreferencesCallIndex < 0) {
-            throw PatchException("Could not find the addPreferences call in onCreate")
-        }
-
-        onCreateMethod.addInstructions(
-            addPreferencesCallIndex + 1,
-            """
-                invoke-virtual {p0}, Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;->getPreferenceScreen()Landroidx/preference/PreferenceScreen;
-                move-result-object v0
-                invoke-static {v0}, $EXTENSION_CLASS->addPreference(Landroidx/preference/PreferenceScreen;)V
-            """,
-        )
-
         // Game key devices ignore back while the splash is shown. Use it to
         // skip the start animation when one is playing.
         val onBackPressedMethod = GameSpaceActivityOnBackPressedFingerprint.method

@@ -8,10 +8,3 @@ object WallpaperRealUpdateAtmosphereFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf("Landroid/graphics/Bitmap;", "Z"),
 )
-
-object GameBackgroundOtherOptionsFragmentOnCreateFingerprint : Fingerprint(
-    definingClass = "Lcn/nubia/gamecenter/settings/basic/OtherOptionsFragment;",
-    name = "onCreate",
-    returnType = "V",
-    parameters = listOf("Landroid/os/Bundle;"),
-)
