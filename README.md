@@ -11,19 +11,20 @@ ZTE gallery, Video player and Game Space patches.
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.1.0](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.1.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;5 patches total
+> **[v1.2.0-dev.1](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.2.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;6 patches total
 <details open>
-<summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 16.5.000.000.2604151714 |
-| :---: |
+| 16.5.000.000.2604151714 | 17.0.001.000.2611022028 |
+| :---: | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Custom start animation and background music](#custom-start-animation-and-background-music) | Adds a patch features menu to Game Space settings for importing custom start animation videos and background music. Pressing back while the start animation plays skips it. |  |
+| [Game backgrounds from Google Play](#game-backgrounds-from-google-play) | Adds a Game backgrounds option in Game Space settings that resolves official backgrounds from Google Play for every added game. Updates are manual only, so switching games keeps the stock behavior. |  |
 
 </details>
 

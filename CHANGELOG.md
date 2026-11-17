@@ -1,3 +1,10 @@
+## [1.2.0-dev.1](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0...v1.2.0-dev.1) (2026-11-17)
+
+### ✨ New Features
+
+* **Game Space:** Add manual game backgrounds from Google Play ([5dced4d](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/5dced4de8bb66550baaa3a2aa5b19d4289559b55))
+* **Game Space:** Rename patch features to start animation and background music ([315e107](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/315e10705bd5da2a82bc19e7bd25064150699e95))
+
 ## [1.1.0](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.0.0...v1.1.0) (2026-11-12)
 
 ### 🐛 Bug Fixes
