@@ -1,3 +1,9 @@
+## [1.2.0-dev.3](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.2.0-dev.2...v1.2.0-dev.3) (2026-11-17)
+
+### ✨ New Features
+
+* **Game Space:** Fix patch options section on 16.5 ([ee2c0a2](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/ee2c0a2674de38b091b16482eae6189e98885b70))
+
 ## [1.2.0-dev.2](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.2.0-dev.1...v1.2.0-dev.2) (2026-11-17)
 
 ### ✨ New Features
