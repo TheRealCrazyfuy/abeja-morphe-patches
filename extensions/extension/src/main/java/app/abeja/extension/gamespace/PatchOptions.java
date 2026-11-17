@@ -46,10 +46,19 @@ public final class PatchOptions {
             }
 
             Class<?> infoClass = Class.forName("cn.nubia.gamecenter.settings.CategoryInfo");
-            Constructor<?> constructor = infoClass.getConstructor(
-                    Class.class, int.class, int.class, boolean.class);
-            Object info = constructor.newInstance(
-                    PatchOptionsFragment.class, icon, title, true);
+            Object info;
+            try {
+                // 17.0 has a four-argument constructor with an "isSupport" flag.
+                Constructor<?> constructor = infoClass.getConstructor(
+                        Class.class, int.class, int.class, boolean.class);
+                info = constructor.newInstance(
+                        PatchOptionsFragment.class, icon, title, true);
+            } catch (NoSuchMethodException ignored) {
+                // 16.5 only has the three-argument constructor.
+                Constructor<?> constructor = infoClass.getConstructor(
+                        Class.class, int.class, int.class);
+                info = constructor.newInstance(PatchOptionsFragment.class, icon, title);
+            }
 
             Method add = categories.getClass().getMethod("add", int.class, Object.class);
             add.invoke(categories, insertAt, info);
