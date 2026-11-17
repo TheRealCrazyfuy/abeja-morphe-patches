@@ -19,6 +19,11 @@ object Constants {
             // Version this patch was developed for.
             AppTarget(
                 version = "16.5.000.000.2604151714"
+            ),
+            // Verified compatible: same settings hooks, and the stock bitmap
+            // recycle bug was fixed upstream here.
+            AppTarget(
+                version = "17.0.001.000.2611022028"
             )
         )
     )
