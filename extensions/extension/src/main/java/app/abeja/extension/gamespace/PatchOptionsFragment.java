@@ -25,6 +25,7 @@ public class PatchOptionsFragment extends PreferenceFragmentCompat {
         setPreferenceScreen(screen);
         AutoGameBackground.addPreference(screen);
         StartAnimationSettings.addPreference(screen);
+        StartAnimationRumble.addPreference(screen);
     }
 
     @Override
