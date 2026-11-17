@@ -11,9 +11,9 @@ ZTE gallery, Video player and Game Space patches.
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.2.0-dev.1](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.2.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;6 patches total
+> **[v1.2.0-dev.2](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.2.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;8 patches total
 <details open>
-<summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -24,7 +24,9 @@ ZTE gallery, Video player and Game Space patches.
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Custom start animation and background music](#custom-start-animation-and-background-music) | Adds a patch features menu to Game Space settings for importing custom start animation videos and background music. Pressing back while the start animation plays skips it. |  |
+| [Disable start animation rumble](#disable-start-animation-rumble) | Adds a switch to Patch options that disables the vibration played while the start animation is running. |  |
 | [Game backgrounds from Google Play](#game-backgrounds-from-google-play) | Adds a Game backgrounds option in Game Space settings that resolves official backgrounds from Google Play for every added game. Updates are manual only, so switching games keeps the stock behavior. |  |
+| [Patch options section](#patch-options-section) | Adds a Patch options section to Game Space settings between Other options and About game space, containing all options added by these patches. |  |
 
 </details>
 

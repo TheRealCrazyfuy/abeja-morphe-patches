@@ -1,3 +1,10 @@
+## [1.2.0-dev.2](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.2.0-dev.1...v1.2.0-dev.2) (2026-11-17)
+
+### ✨ New Features
+
+* **Game Space:** Add patch options section ([85b0509](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/85b0509396ff1d3a1a36d11c4d2920f8e2aad6f6))
+* **Game Space:** Add start animation rumble switch ([5cae77b](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/5cae77b790bcd5829436b68264f2d233832996d0))
+
 ## [1.2.0-dev.1](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.1.0...v1.2.0-dev.1) (2026-11-17)
 
 ### ✨ New Features
