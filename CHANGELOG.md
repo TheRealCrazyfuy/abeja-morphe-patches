@@ -1,3 +1,10 @@
+## [1.2.0-dev.4](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.2.0-dev.3...v1.2.0-dev.4) (2026-11-18)
+
+### ✨ New Features
+
+* **Game Space:** Show progress while fetching backgrounds ([792e0f7](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/792e0f71b227bd6aa9624eaae6f730c32eb9406c))
+* **Game Space:** Unlock custom watermark text limit ([402eef3](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/commit/402eef30aaffa9638243d36aa724f40e119e2e1d))
+
 ## [1.2.0-dev.3](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/compare/v1.2.0-dev.2...v1.2.0-dev.3) (2026-11-17)
 
 ### ✨ New Features

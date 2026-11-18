@@ -11,9 +11,9 @@ ZTE gallery, Video player and Game Space patches.
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.2.0-dev.3](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.2.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;8 patches total
+> **[v1.2.0-dev.4](https://github.com/TheRealCrazyfuy/abeja-morphe-patches/releases/tag/v1.2.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;9 patches total
 <details open>
-<summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<summary>📦 Game Space&nbsp;&nbsp;•&nbsp;&nbsp;5 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -27,6 +27,7 @@ ZTE gallery, Video player and Game Space patches.
 | [Disable start animation rumble](#disable-start-animation-rumble) | Adds a switch to Patch options that disables the vibration played while the start animation is running. |  |
 | [Game backgrounds from Google Play](#game-backgrounds-from-google-play) | Adds a Game backgrounds option in Game Space settings that resolves official backgrounds from Google Play for every added game. Updates are manual only, so switching games keeps the stock behavior. |  |
 | [Patch options section](#patch-options-section) | Adds a Patch options section to Game Space settings between Other options and About game space, containing all options added by these patches. |  |
+| [Unlock custom watermark text limit](#unlock-custom-watermark-text-limit) | Raises the custom watermark text limit from 10 to 1000 characters. |  |
 
 </details>
 
