@@ -94,8 +94,19 @@ public final class AutoGameBackground {
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
     private static java.lang.ref.WeakReference<Preference> sPreference =
             new java.lang.ref.WeakReference<>(null);
-    private static java.lang.ref.WeakReference<Dialog> sFetchDialog =
-            new java.lang.ref.WeakReference<>(null);
+    private static FetchDialog sFetchDialog;
+
+    private static final class FetchDialog {
+        final Dialog dialog;
+        final ProgressBar progressBar;
+        final TextView progressLabel;
+
+        FetchDialog(Dialog dialog, ProgressBar progressBar, TextView progressLabel) {
+            this.dialog = dialog;
+            this.progressBar = progressBar;
+            this.progressLabel = progressLabel;
+        }
+    }
 
     private AutoGameBackground() {
     }
@@ -190,7 +201,7 @@ public final class AutoGameBackground {
                 return;
             }
 
-            showFetchDialog(context);
+            showFetchDialog(context, packages.size());
 
             EXECUTOR.execute(() -> {
                 long start = System.currentTimeMillis();
@@ -214,51 +225,81 @@ public final class AutoGameBackground {
     }
 
     /**
-     * A simple, non-blocking progress dialog with a spinner and a label. The
-     * stock upgrade layout relies on activity-specific theming and constraint
-     * sizing, so reusing it in a plain dialog made its buttons overlap the
-     * text; a small self-contained view avoids that entirely.
+     * A simple, non-blocking dialog with a determinate progress bar. The stock
+     * upgrade layout relies on activity-specific theming and constraint sizing,
+     * so reusing it in a plain dialog made its buttons overlap the text; a
+     * small self-contained view avoids that entirely.
      */
-    private static void showFetchDialog(Context context) {
+    private static void showFetchDialog(Context context, int total) {
         dismissFetchDialog();
         try {
-            int spinnerSize = dp(context, 48);
             int labelGap = dp(context, 16);
             int padding = dp(context, 32);
 
-            ProgressBar spinner = new ProgressBar(context);
-            spinner.setIndeterminate(true);
-            LinearLayout.LayoutParams spinnerParams =
-                    new LinearLayout.LayoutParams(spinnerSize, spinnerSize);
-            spinnerParams.gravity = Gravity.CENTER;
-            spinner.setLayoutParams(spinnerParams);
-
-            TextView label = new TextView(context);
-            label.setText("Fetching background images");
-            label.setTextSize(16f);
-            label.setGravity(Gravity.CENTER);
-            label.setPadding(0, labelGap, 0, 0);
-            label.setLayoutParams(new LinearLayout.LayoutParams(
+            TextView title = new TextView(context);
+            title.setText("Fetching background images");
+            title.setTextSize(16f);
+            title.setGravity(Gravity.CENTER);
+            title.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            ProgressBar progressBar = new ProgressBar(
+                    context, null, android.R.attr.progressBarStyleHorizontal);
+            progressBar.setIndeterminate(false);
+            progressBar.setMax(Math.max(total, 1));
+            progressBar.setProgress(0);
+            LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            progressParams.topMargin = labelGap;
+            progressBar.setLayoutParams(progressParams);
+
+            TextView progressLabel = new TextView(context);
+            progressLabel.setText("0 of " + total);
+            progressLabel.setTextSize(14f);
+            progressLabel.setGravity(Gravity.CENTER);
+            LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            labelParams.topMargin = dp(context, 8);
+            progressLabel.setLayoutParams(labelParams);
 
             LinearLayout content = new LinearLayout(context);
             content.setOrientation(LinearLayout.VERTICAL);
             content.setGravity(Gravity.CENTER);
             content.setPadding(padding, padding, padding, padding);
-            content.addView(spinner);
-            content.addView(label);
+            content.addView(title);
+            content.addView(progressBar);
+            content.addView(progressLabel);
 
             Dialog dialog = new AlertDialog.Builder(context)
                     .setView(content)
                     .setCancelable(false)
                     .create();
             dialog.show();
-            sFetchDialog = new java.lang.ref.WeakReference<>(dialog);
+            sFetchDialog = new FetchDialog(dialog, progressBar, progressLabel);
         } catch (Throwable t) {
-            Log.w(TAG, "Unable to show the background fetch spinner", t);
+            Log.w(TAG, "Unable to show the background fetch dialog", t);
             dismissFetchDialog();
         }
+    }
+
+    /** Move the dialog's progress bar and label to the next completed game. */
+    private static void publishFetchProgress(int current, int total) {
+        MAIN_HANDLER.post(() -> {
+            FetchDialog fetch = sFetchDialog;
+            if (fetch == null) {
+                return;
+            }
+            try {
+                fetch.progressBar.setProgress(current);
+                fetch.progressLabel.setText(current + " of " + total);
+                Log.d(TAG, "Fetch progress " + current + " of " + total);
+            } catch (Throwable ignored) {
+                // The hosting activity may already be gone.
+            }
+        });
     }
 
     private static int dp(Context context, int value) {
@@ -266,9 +307,13 @@ public final class AutoGameBackground {
     }
 
     private static void dismissFetchDialog() {
-        Dialog dialog = sFetchDialog.get();
-        sFetchDialog = new java.lang.ref.WeakReference<>(null);
-        if (dialog != null && dialog.isShowing()) {
+        FetchDialog fetch = sFetchDialog;
+        sFetchDialog = null;
+        if (fetch == null || fetch.dialog == null) {
+            return;
+        }
+        Dialog dialog = fetch.dialog;
+        if (dialog.isShowing()) {
             try {
                 dialog.dismiss();
             } catch (Throwable ignored) {
@@ -280,6 +325,8 @@ public final class AutoGameBackground {
     private static int updatePackages(Context context, Object model, List<String> packages,
                                       boolean force) {
         int updated = 0;
+        int index = 0;
+        int total = packages.size();
         for (String pkg : packages) {
             try {
                 String url = resolveUrl(context, pkg, force);
@@ -288,9 +335,12 @@ public final class AutoGameBackground {
                 }
             } catch (Throwable t) {
                 Log.w(TAG, "Unable to update background for " + pkg, t);
+            } finally {
+                index++;
+                publishFetchProgress(index, total);
             }
         }
-        Log.i(TAG, "Updated " + updated + " of " + packages.size() + " backgrounds");
+        Log.i(TAG, "Updated " + updated + " of " + total + " backgrounds");
         return updated;
     }
 
